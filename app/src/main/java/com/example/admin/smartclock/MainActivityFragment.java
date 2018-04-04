@@ -1,5 +1,7 @@
 package com.example.admin.smartclock;
 
+import android.drm.DrmStore;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,7 +11,7 @@ import android.view.ViewGroup;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment {
+public class MainActivityFragment extends Fragment implements  View.OnClickListener{
 
     public MainActivityFragment() {
     }
@@ -19,4 +21,5 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
+
 }

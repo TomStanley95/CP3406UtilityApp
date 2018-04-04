@@ -1,6 +1,7 @@
 package com.example.admin.smartclock;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +17,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String alarmIntervalString = sharedPreferences.getString("alarmInterval", null);
+
+        if (alarmIntervalString == null){
+            return;
+        }else  if (alarmIntervalString.equals("0")){
+            String defaultInterval = "10";
+            sharedPreferences.edit().putString("alarmInterval",defaultInterval).apply();
+        }
+
         PreferenceManager.setDefaultValues(this, R.xml.preferences,false);
+
+
 
 
     }

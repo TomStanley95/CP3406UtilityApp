@@ -4,4 +4,6 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="number_of_alarms_summary">select how many alarms to create to help you wake up.</string>
     <string name="alarm_interval_summary">Select the interval in minutes between each alarm</string>
+    <string name="set_alarm">Set Alarm</string>
+    <string name="reset_alarm">Reset Alarm</string>
 </resources>
