@@ -6,4 +6,6 @@
     <string name="alarm_interval_summary">Select the interval in minutes between each alarm</string>
     <string name="set_alarm">Set Alarm</string>
     <string name="reset_alarm">Reset Alarm</string>
+    <string name="cancel_alarm">Cancel Alarm</string>
+    <string name="welcome_to_smart_alarm">Welcome to Smart Alarm</string>
 </resources>

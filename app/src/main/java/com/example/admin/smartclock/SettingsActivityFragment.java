@@ -33,24 +33,10 @@ public class SettingsActivityFragment extends PreferenceFragment implements Shar
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key){
-            case "alarmAmount":
+            case "ringtonePreference":
                 getActivity().navigateUpTo(new Intent(getContext(),MainActivity.class));
                 break;
-            case "alarmInterval":
-                String alarmIntervalString = sharedPreferences.getString("alarmInterval", null);
-//                Log.i("SettingsActivityFrag", "alarmInterval =" + alarmIntervalString);
-                if (alarmIntervalString == null){
-                    return;
-                }
-                int alarmInterval = Integer.parseInt(alarmIntervalString);
-//                Log.i("Testing", Integer.toString(alarmInterval));
-                if (alarmInterval == 0){
-                    Toast.makeText(getContext(),"Alarm interval cannot be negative or zero, setting to default value", Toast.LENGTH_LONG).show();
-                    String defaultInterval = "10";
-                    sharedPreferences.edit().putString("alarmInterval",defaultInterval).apply();
-                    EditTextPreference pref = (EditTextPreference) findPreference("alarmInterval");
-                    pref.setText(defaultInterval);
-                }
+            case "repeatPreference":
                 getActivity().navigateUpTo(new Intent(getContext(),MainActivity.class));
                 break;
 

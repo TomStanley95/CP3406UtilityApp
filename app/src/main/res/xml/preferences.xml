@@ -2,19 +2,12 @@
 <PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ListPreference
-        android:defaultValue="1"
-        android:entries="@array/number_of_alarms"
-        android:entryValues="@array/number_of_alarms"
-        android:key="alarmAmount"
-        android:summary="@string/number_of_alarms_summary"
-        android:title="Number of Alarms to Set" />
-    <EditTextPreference
-        android:defaultValue="10"
-        android:inputType="number"
-        android:key="alarmInterval"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:summary="@string/alarm_interval_summary"
-        android:title="Alarm Interval" />
+    <RingtonePreference
+        android:defaultValue=""
+        android:key="ringtonePreference"
+        android:title="Select a ringtone" />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="repeatPreference"
+        android:title="Repeat Alarm" />
 </PreferenceScreen>
