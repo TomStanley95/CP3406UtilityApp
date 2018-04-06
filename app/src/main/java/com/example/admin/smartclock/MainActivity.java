@@ -5,6 +5,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -26,24 +29,30 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     private PendingIntent alarmIntent;
     private Boolean doRepeatAlarm;
     private TimePicker alarmTimePicker;
-    private Intent intentToFire = new Intent(this, AlarmReceiver.class);
+    private Intent intentToFire;
     private SharedPreferences sharedPreferences;
     public static Context contextOfApplication;
 
-    //    private ringtone;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        intentToFire = new Intent(this, AlarmReceiver.class);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         createWidjListeners();
         getPreferenceValues();
         contextOfApplication = getApplicationContext();
 //      Init the alarms state as off.
-        intentToFire.putExtra("status", false);
+        String ringtone = sharedPreferences.getString("ringtonePreference",null);
+        if (ringtone == null){
+            ringtone = "Andromeda";
+            sharedPreferences.edit().putString("ringtonePreference",ringtone).apply();
+        }
         PreferenceManager.setDefaultValues(this, R.xml.preferences,false);
+
     }
 
     @Override
@@ -92,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         int alarmMinute = alarmTimePicker.getMinute();
         alarmMgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
 //      putting the status to "on" (True)
-        intentToFire.putExtra("status", true);
+        intentToFire.putExtra("status", "AlarmOn");
         alarmIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intentToFire, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -117,14 +126,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         String alarmTime = Integer.toString(alarmHour) + ":" + Integer.toString(alarmMinute);
         String alarmInfoText = "You set a " + alarmType + " for " + alarmTime;
         Toast.makeText(getApplicationContext(),alarmInfoText, Toast.LENGTH_LONG).show();
+        moveTaskToBack(true);
     }
 
     public void cancelAlarm(){
-
+        Log.i("Test", "Cancelling alarm");
         if (alarmMgr!= null) {
             alarmMgr.cancel(alarmIntent);
         }
-        intentToFire.putExtra("extra", false);
+        intentToFire.putExtra("status", "AlarmOff");
         sendBroadcast(intentToFire);
         Toast.makeText(getApplicationContext(),"Alarm terminated", Toast.LENGTH_LONG).show();
     }

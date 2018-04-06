@@ -29,6 +29,10 @@
                 android:value="com.example.admin.smartclock.MainActivity" />
         </activity>
         <receiver android:name=".AlarmReceiver" />
+        <service android:name=".RingtonePlayingService"
+            android:enabled="true">
+
+        </service>
 
     </application>
 

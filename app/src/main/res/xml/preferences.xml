@@ -3,8 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RingtonePreference
-        android:defaultValue=""
+        android:defaultValue="Andromeda"
+        android:enabled="true"
         android:key="ringtonePreference"
+        android:persistent="true"
+        android:ringtoneType="ringtone"
         android:title="Select a ringtone" />
     <SwitchPreference
         android:defaultValue="false"

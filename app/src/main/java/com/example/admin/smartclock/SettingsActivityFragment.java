@@ -3,13 +3,9 @@ package com.example.admin.smartclock;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NavUtils;
-import android.util.Log;
-import android.widget.Toast;
 
 /**
  * A placeholder fragment containing a simple view.
