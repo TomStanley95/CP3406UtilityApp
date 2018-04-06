@@ -28,6 +28,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.admin.smartclock.MainActivity" />
         </activity>
+        <receiver android:name=".AlarmReceiver" />
+
     </application>
 
 </manifest>

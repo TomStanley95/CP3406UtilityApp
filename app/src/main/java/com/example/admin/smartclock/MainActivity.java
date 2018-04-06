@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -23,42 +24,26 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
-    private Boolean repeatAlarm;
-    private TimePicker alarmTime;
-    private Context context;
-//    private ringtone;
+    private Boolean doRepeatAlarm;
+    private TimePicker alarmTimePicker;
+    private Intent intentToFire = new Intent(this, AlarmReceiver.class);
+    private SharedPreferences sharedPreferences;
+    public static Context contextOfApplication;
+
+    //    private ringtone;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Button alarmSetButton = findViewById(R.id.setAlarmButton);
-        Button alarmResetButton = findViewById(R.id.resetAlarmButton);
-        Button alarmCancelButton = findViewById(R.id.cancelAlarmButton);
-        this.context = this;
-        alarmTime = findViewById(R.id.timePicker);
-        alarmSetButton.setOnClickListener(this);
-        alarmResetButton.setOnClickListener(this);
-        alarmCancelButton.setOnClickListener(this);
-        alarmTime.setOnTimeChangedListener(this);
-        repeatAlarm = sharedPreferences.getBoolean("repeatPreference", false);
-
-        String alarmIntervalString = sharedPreferences.getString("alarmInterval", null);
-
-        if (alarmIntervalString == null){
-            return;
-        }else  if (alarmIntervalString.equals("0")){
-            String defaultInterval = "10";
-            sharedPreferences.edit().putString("alarmInterval",defaultInterval).apply();
-        }
-
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        createWidjListeners();
+        getPreferenceValues();
+        contextOfApplication = getApplicationContext();
+//      Init the alarms state as off.
+        intentToFire.putExtra("status", false);
         PreferenceManager.setDefaultValues(this, R.xml.preferences,false);
-
-
-
-
     }
 
     @Override
@@ -100,32 +85,48 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 break;
         }
 
-
     }
 
     public void setAlarm(){
-        int alarmHour =alarmTime.getHour();
-        int alarmMinute =alarmTime.getMinute();
-        alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, MainActivity.class);
-        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        int alarmHour = alarmTimePicker.getHour();
+        int alarmMinute = alarmTimePicker.getMinute();
+        alarmMgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+//      putting the status to "on" (True)
+        intentToFire.putExtra("status", true);
+        alarmIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intentToFire, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, alarmHour);
         calendar.set(Calendar.MINUTE, alarmMinute);
-        if(repeatAlarm) {
+        if(doRepeatAlarm) {
             alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY, alarmIntent);
+            String test = "We've reached this repeating alarm";
+            Log.i("Test", test);
         }else{
             alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),alarmIntent);
+            String test = "We've reached this one time alarm";
+            Log.i("Test", test);
         }
-
-
+        String alarmType;
+        if (doRepeatAlarm){
+            alarmType = "repeating";
+        }else{
+            alarmType = "once off";
+        }
+        String alarmTime = Integer.toString(alarmHour) + ":" + Integer.toString(alarmMinute);
+        String alarmInfoText = "You set a " + alarmType + " for " + alarmTime;
+        Toast.makeText(getApplicationContext(),alarmInfoText, Toast.LENGTH_LONG).show();
     }
+
     public void cancelAlarm(){
+
         if (alarmMgr!= null) {
             alarmMgr.cancel(alarmIntent);
         }
+        intentToFire.putExtra("extra", false);
+        sendBroadcast(intentToFire);
+        Toast.makeText(getApplicationContext(),"Alarm terminated", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -133,6 +134,26 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         String test = "The hour is" + Integer.toString(hour) + ", The minute is" + Integer.toString(minute);
         Log.i("Test", test);
 
+    }
+
+    public void createWidjListeners(){
+//        Handles the creation of all the buttons + the clock.
+        Button alarmSetButton = findViewById(R.id.setAlarmButton);
+        Button alarmResetButton = findViewById(R.id.resetAlarmButton);
+        Button alarmCancelButton = findViewById(R.id.cancelAlarmButton);
+        alarmSetButton.setOnClickListener(this);
+        alarmResetButton.setOnClickListener(this);
+        alarmCancelButton.setOnClickListener(this);
+        alarmTimePicker = findViewById(R.id.timePicker);
+        alarmTimePicker.setOnTimeChangedListener(this);
+    }
+
+    public void getPreferenceValues(){
+        doRepeatAlarm = sharedPreferences.getBoolean("repeatPreference", false);
+    }
+
+    public static Context getContextOfApplication(){
+        return contextOfApplication;
     }
 
 
